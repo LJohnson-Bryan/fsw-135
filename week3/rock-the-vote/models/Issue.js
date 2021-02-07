@@ -11,6 +11,10 @@ const issueSchema = new Schema({
         type: String,
         required: true
     },
+    votes: {
+        type: Number,
+        default: 0
+    },
     date: {
         type: Date,
         default: Date.now
