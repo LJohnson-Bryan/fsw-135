@@ -9,11 +9,6 @@ const app = express();
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Routes
-// app.use('/user', require('./routes/userRouter.js'));
-// app.use('/comment', require('./routes/commentRouter.js'));
-// app.use('/issue', require('./routes/issueRouter.js'));
-
 // Database
 mongoose.connect('mongodb://localhost:27017/voteIssuesDB',
     {
