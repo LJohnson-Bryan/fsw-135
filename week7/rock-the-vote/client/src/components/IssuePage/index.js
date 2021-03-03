@@ -34,7 +34,7 @@ const IssuePage = props => {
             <div>
                 <button type="button" onClick={() => {
                     deleteItem();
-                }} className="inline-flex items-center px-3 py-2 mr-2 mt-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                }} class="inline-flex items-center px-3 py-2 mr-2 mt-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Delete Issue
                 </button>
                 <button type="button" onClick={() => {
@@ -44,7 +44,7 @@ const IssuePage = props => {
                     } else {
                         setToggle(true);
                     }
-                }} className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                }} class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     {toggle ? 'Save Issue' : 'Edit Issue'}
                 </button>
             </div> : <div></div>
@@ -95,13 +95,9 @@ const IssuePage = props => {
                         <div className="mt-1 mb-6 sm:mt-0 sm:col-span-2">
                             <textarea value={commentForm} onChange={e => setCommentForm(e.target.value)} id="about" name="about" rows="3" className="w-full shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"></textarea>
                             <button type="button" onClick={() => {
-                                postComment(props.match.params.issue_id, commentForm);
-                                setComments(prevState => [...prevState, {
-                                    name: username,
-                                    comment: commentForm
-                                }]);
+                                postComment(props.match.params.issue_id, commentForm, setComments);
                                 setCommentForm('');
-                            }} className="inline-flex items-center px-3 py-2 mr-2 mt-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            }} class="inline-flex items-center px-3 py-2 mr-2 mt-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Submit Comment
                             </button>
                         </div>
@@ -113,8 +109,9 @@ const IssuePage = props => {
                         <ul className="divide-y divide-gray-100">
                             
                         {comments ? 
-                            comments.map(comment => (
-                                <Comment {...comment} setComments={setComments} />
+                            comments.map(comment => ( /* Cannot read userData of undefined. But it is 
+                                actually in the returned object..? -- Further looking required.*/
+                                <Comment {...comment} username={props}/>
                             ))
                         :
                         'There Are No comments yet! Be the first to make one.'

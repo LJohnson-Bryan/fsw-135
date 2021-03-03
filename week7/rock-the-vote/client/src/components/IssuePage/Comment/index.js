@@ -10,7 +10,10 @@ const Comment = (props) => {
     const [toggle, setToggle] = useState(false);
     const [editing, setEditing] = useState(false);
     const [editForm, setEditForm] = useState(props.comment);
-    const {setComments} = this.props;
+    const {setComments} = props;
+
+
+    console.log(data)
 
     return ( 
         <li className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
@@ -27,7 +30,7 @@ const Comment = (props) => {
                         Save Comment
                     </button>
                 </div>:
-                <p><b>{commentUsername}</b><br /><span>
+                <p><b>{ 'test' }</b><br /><span>
                 {data.comment}</span></p>}
             </div>
             <div className="relative inline-block text-left">
