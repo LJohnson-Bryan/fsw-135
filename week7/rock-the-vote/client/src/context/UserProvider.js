@@ -114,16 +114,6 @@ export default function UserProvider(props) {
                 userAxios.get(`/api/comment`)
                 .then (res => {
                     let issueComments = res.data.filter(item => item.issue === issueID);
-                    
-
-                    issueComments.forEach(comment => {
-                        userAxios.get(`/api/user/${comment.user}`)
-                        .then( res => {
-                            comment.userData = res.data;
-                        })
-                        .catch(commentErr => handleAuthErr(commentErr));
-                    });
-
                     setComments(issueComments);
                 })
             })
@@ -174,7 +164,7 @@ export default function UserProvider(props) {
     const getProfilePicture = (userID, setFunc) => {
         userAxios.get(`/api/user/${userID}`)
         .then(res => {
-            setFunc(res.data)
+                setFunc(res.data.profileImg);
         })
         .catch(err => {
             handleAuthErr(err);
@@ -184,6 +174,12 @@ export default function UserProvider(props) {
     const submitUserChanges = (userID, obj) => {
         userAxios.put(`/api/user/${userID}`, obj)
         .then(res => {
+            const user = res.data;
+            localStorage.setItem('user', JSON.stringify(user));
+            setuserState(prevUserState => ({
+                ...prevUserState,
+                user
+            }))
         })
         .catch(err => {
             handleAuthErr(err);
@@ -203,11 +199,51 @@ export default function UserProvider(props) {
     const deleteComment = (commentID, setComments) => {
         userAxios.delete(`/api/comment/${commentID}`)
         .then(res => {
+            console.log(res, commentID)
             setComments(prevState => prevState.filter(item => item._id !== res.data._id))
         })
         .catch(err => {
             handleAuthErr(err)
         })
+    }
+
+    const getCommentUsername = (userID, setFunc) => {
+        userAxios.get(`/api/user/${userID}`)
+        .then(res => {
+            setFunc(res.data.username)
+        })
+        .catch(err => handleAuthErr(err))
+    }
+
+    const updateVote = (userID, issueID, setIssue) => {
+        userAxios.get(`/api/issue/${issueID}`)
+        .then(res => {
+            const prevVotes = res.data.votes;
+            if(!prevVotes.includes(userID)) {
+                userAxios.put(`/api/issue/${issueID}`, {votes: [...prevVotes, userID]})
+            .then(res => {
+                console.log("RAN VOTE!")
+                setIssue(prevState => ({
+                    ...prevState,
+                    votes: res.data.votes
+                }))
+            })
+            .catch(err => console.log(err))
+            } else {
+
+                const newVotes = prevVotes.filter(vote => vote !== userID)
+                userAxios.put(`/api/issue/${issueID}`, {votes: newVotes})
+                .then(res => {
+                    console.log("REMOVE VOTE")
+                    setIssue(prevState => ({
+                        ...prevState,
+                        votes: res.data.votes
+                    }))
+                })
+            }
+            
+        })
+        .catch(err => console.log(err))
     }
 
     return (
@@ -227,7 +263,10 @@ export default function UserProvider(props) {
                 postComment,
                 submitUserChanges,
                 updateComment,
-                deleteComment
+                deleteComment,
+                getProfilePicture,
+                getCommentUsername,
+                updateVote
                 } }>
             { props.children }
         </UserContext.Provider>

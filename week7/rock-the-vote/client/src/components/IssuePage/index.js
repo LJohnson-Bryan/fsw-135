@@ -2,6 +2,7 @@ import {React, useState, useEffect, useContext} from 'react';
 import {UserContext} from '../../context/UserProvider';
 import {useHistory} from 'react-router-dom';
 import Comment from './Comment';
+import './styles.css';
 
 const IssuePage = props => {
 
@@ -13,7 +14,7 @@ const IssuePage = props => {
     const [inputs, setInputs] = useState({
         issue: 'issue'
     })
-    const { getOneIssue, user: {username, isAdmin}, deleteIssue, updateIssue, postComment } = useContext(UserContext);
+    const { getOneIssue, user: {username, isAdmin, _id}, deleteIssue, updateIssue, postComment, updateVote } = useContext(UserContext);
     const history = useHistory();
 
     useEffect(() => {
@@ -77,7 +78,10 @@ const IssuePage = props => {
                         Likes
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900">
-                        0 likes.
+                        {issue.votes.length} likes. <br />
+                        <i onClick={() => {
+                            updateVote(_id, issue._id, setIssue);
+                        }} class={`fa fa-heart reaction ${issue.votes.includes(_id) ? 'active' : ''}`}></i>
                         </dd>
                     </div>
                     <div className="sm:col-span-2">
@@ -109,10 +113,9 @@ const IssuePage = props => {
                         <ul className="divide-y divide-gray-100">
                             
                         {comments ? 
-                            comments.map(comment => ( /* Cannot read userData of undefined. But it is 
-                                actually in the returned object..? -- Further looking required.*/
-                                <Comment {...comment} username={props}/>
-                            ))
+                            comments.map(comment => {
+                                return <Comment {...comment} setComments={setComments} />
+                            })
                         :
                         'There Are No comments yet! Be the first to make one.'
                         }

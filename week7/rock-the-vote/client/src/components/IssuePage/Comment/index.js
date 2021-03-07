@@ -1,11 +1,10 @@
 import {React, useState, useContext, useEffect} from 'react';
 import {UserContext} from '../../../context/UserProvider';
-import {useHistory} from 'react-router-dom';
 
 const Comment = (props) => {
 
-    const {user: {username, isAdmin, _id}, updateComment, getUsername, deleteComment } = useContext(UserContext);
-    const [commentUsername, setCommentUsername] = useState(props.user);
+    const {user: {username, isAdmin, _id}, updateComment, getCommentUsername, deleteComment } = useContext(UserContext);
+    const [commentUsername, setCommentUsername] = useState('Loading...');
     const [data, setData] = useState(props);
     const [toggle, setToggle] = useState(false);
     const [editing, setEditing] = useState(false);
@@ -13,7 +12,9 @@ const Comment = (props) => {
     const {setComments} = props;
 
 
-    console.log(data)
+    useEffect(() => {
+        getCommentUsername(props.user, setCommentUsername)
+    }, []);
 
     return ( 
         <li className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
@@ -30,7 +31,7 @@ const Comment = (props) => {
                         Save Comment
                     </button>
                 </div>:
-                <p><b>{ 'test' }</b><br /><span>
+                <p><b>{ commentUsername }</b><br /><span>
                 {data.comment}</span></p>}
             </div>
             <div className="relative inline-block text-left">

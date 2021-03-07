@@ -1,13 +1,13 @@
 import {React, useState, useEffect, useContext} from 'react';
 import { UserContext } from '../../context/UserProvider';
 import IssueCard from '../IssueCard';
+import {Link} from 'react-router-dom';
 
 const Profile = props => {
 
-    const { user: {username, _id}, issues, getUserIssues } = useContext(UserContext);
-    const [userData, setUserData] = useState({username: username, profileImg: "https://st3.depositphotos.com/13159112/17145/v/600/depositphotos_171453724-stock-illustration-default-avatar-profile-icon-grey.jpg"})
-    const [toggle, setToggle] = useState(true);
-    const [urlField, setUrlField] = useState('');
+    const { user: {username, _id, profileImg}, issues, getUserIssues, submitUserChanges } = useContext(UserContext);
+    const [userData, setUserData] = useState({username: username, profileImg: profileImg})
+    const [toggle, setToggle] = useState(false);
     const [profileIssues, setProfileIssues] = useState(issues);
 
     useEffect(() => {
@@ -16,18 +16,20 @@ const Profile = props => {
     }, []);
 
     const submitChanges = () => {
-        // Submit to API
+        submitUserChanges(_id, {profileImg: userData.profileImg, username: userData.username})
         setToggle(false);
     }
 
     const issueMap = profileIssues.reverse().map(issue => {
             if(issue.user == _id) {
-                return <IssueCard 
-                name={_id}
-                imgURL="https://st3.depositphotos.com/13159112/17145/v/600/depositphotos_171453724-stock-illustration-default-avatar-profile-icon-grey.jpg"
-                content={issue.issue}
-                key={issue._id}
-                />
+                return <Link to={`/issues/${issue._id}`}>
+                    <IssueCard 
+                    name={_id}
+                    imgURL={profileImg}
+                    content={issue.issue}
+                    key={issue._id}
+                    />
+                </Link>
             }
         }
     )
@@ -35,13 +37,13 @@ const Profile = props => {
     return ( 
         <div>
             <div className="flex items-center mb-5">
-                <img className="inline-block h-14 w-14 rounded-full mr-5" src={userData.profileImg} alt="" />
+                <img className="inline-block h-14 w-14 rounded-full mr-5" src={profileImg} alt="" />
                 {toggle ? 
                 <form onSubmit={submitChanges}>
                     <label htmlFor="name" className="sr-only">username</label>
                     <p className="sm:block md:block lg:inline xl:inline">Username:</p> <input type="text" name="name" id="name" className="border-gray-300 mr-3 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md ml-3" onChange={e => setUserData({...userData, username: e.target.value})} value={userData.username} placeholder="Your Name" />
                     <label htmlFor="profilelink" className="sr-only">profile image link</label>
-                    <p className="sm:block md:block lg:inline xl:inline">Image Link:</p> <input type="text" name="profilelink" id="profilelink" className="border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md ml-3" onChange={e => setUrlField(e.target.value)} value={urlField} placeholder="Profile Image" />
+                    <p className="sm:block md:block lg:inline xl:inline">Image Link:</p> <input type="text" name="profilelink" id="profilelink" className="border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md ml-3" onChange={e => setUserData({...userData, profileImg: e.target.value})} value={userData.profileImg} placeholder="Profile Image" />
                 </form>
                 : 
                 <span className="inline-block align-text-middle ml-3 text-xl">{userData.username}</span>}

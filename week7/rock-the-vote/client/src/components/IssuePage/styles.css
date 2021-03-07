@@ -1,0 +1,8 @@
+.reaction {
+    margin: 0 5px;
+    font-size: 32px;
+}
+
+.reaction.active {
+    color: red;
+}

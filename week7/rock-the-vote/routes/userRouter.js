@@ -20,7 +20,7 @@ userRouter.route('/')
             res.status(500);
             return next(err);
         }
-        return res.status(201).send(savedItem);
+        return res.status(201).send(savedItem.withoutPassword());
     })
 })
 
@@ -44,7 +44,7 @@ userRouter.route('/:userID')
                 res.status(500);
                 return next(err);
             }
-            return res.status(201).send(updatedUser);
+            return res.status(201).send(updatedUser.withoutPassword());
         }
     )
 })
@@ -54,7 +54,7 @@ userRouter.route('/:userID')
             res.status(500);
             return next(err);
         }
-        return res.status(200).send(deletedUser);
+        return res.status(200).send(deletedUser.withoutPassword());
     })
 })
 

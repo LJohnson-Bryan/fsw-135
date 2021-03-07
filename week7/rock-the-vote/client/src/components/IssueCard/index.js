@@ -6,10 +6,14 @@ const IssueCard = (props) => {
     const [issueCard, setIssueCard] = useState({
         name: props.name
     });
-    const { getUsername } = useContext(UserContext);
+
+    const [profileIMG, setProfileIMG] = useState('');
+
+    const { getUsername, getProfilePicture } = useContext(UserContext);
 
     useEffect(() => {
-        getUsername(issueCard.name, setIssueCard)
+        getUsername(issueCard.name, setIssueCard);
+        getProfilePicture(props.name, setProfileIMG)
     }, []); 
 
     return ( 
@@ -21,7 +25,7 @@ const IssueCard = (props) => {
                 </div>
                     <p className="mt-1 text-gray-500 text-sm truncate">{props.content}</p>
                 </div>
-                <img className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0" src={props.imgURL} alt="" />
+                <img className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0" src={profileIMG} alt="" />
             </div>
         </li>
     );
